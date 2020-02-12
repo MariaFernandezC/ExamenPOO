@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         DetectarBandera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent detectionFace2 = new Intent (MainActivity.this, DetectarBandera.class);
+                Intent detectionFace2 = new Intent (MainActivity.this, LabelDetection.class);
                 MainActivity.this.startActivity(detectionFace2);
                 finish();
             }

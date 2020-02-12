@@ -14,8 +14,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionRequestInitializer;
 import com.google.api.services.vision.v1.model.AnnotateImageRequest;
@@ -28,6 +32,7 @@ import com.google.api.services.vision.v1.model.Image;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -153,6 +158,41 @@ public class LabelDetection extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
             imageUri = data.getData();
             imagen.setImageURI(imageUri);
+        }    }
+
+
+    private static class LableDetectionTask extends AsyncTask<Object, Void, String> {
+        private final WeakReference<MainActivity> mActivityWeakReference;
+        private Vision.Images.Annotate mRequest;
+
+        LableDetectionTask(MainActivity activity, Vision.Images.Annotate annotate) {
+            mActivityWeakReference = new WeakReference<>(activity);
+            mRequest = annotate;
+        }
+
+
+        @Override
+        protected String doInBackground(Object... objects) {
+            return null;
         }
     }
-}
+
+
+
+    private static String convertResponseToString(BatchAnnotateImagesResponse response) {
+        StringBuilder message = new StringBuilder("I found these things:\n\n");
+
+        List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
+        if (labels != null) {
+            for (EntityAnnotation label : labels) {
+                message.append(String.format(Locale.US, "%.3f: %s", label.getScore(), label.getDescription()));
+                message.append("\n");
+            }
+        } else {
+            message.append("nothing");
+        }
+
+        return message.toString();
+    }
+    }
+
