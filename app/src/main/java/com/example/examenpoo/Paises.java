@@ -1,37 +1,41 @@
 package com.example.examenpoo;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 public class Paises {
+    private String name, alpha2_code,alpha3_code, url;
 
-    public Paises(){
-
+    public Paises(JSONObject a) throws JSONException {
+        this.name = a.getString("name").toString();
+        this.alpha2_code = a.getString("alpha2_code").toString();
+        this.alpha3_code = a.getString("alpha3_code").toString();
+        this.url = "http://www.geognos.com/api/en/countries/flag/"+a.getString("alpha2_code").toString()+".png";
+    }
+    public static ArrayList<Paises> JsonObjectsBuild(JSONArray datos) throws JSONException {
+        ArrayList<Paises> obj = new ArrayList<>();
+        for (int i = 0; i < datos.length(); i++) {
+            obj.add(new Paises(datos.getJSONObject(i)));
+        }
+        return obj;
     }
 
-    public String getId_pais() {
-        return id_pais;
+    public String getUrl() {
+        return url;
     }
 
-    public void setId_pais(String id_pais) {
-        this.id_pais = id_pais;
+    public String getName() {
+        return name;
     }
 
-    public String getNombres() {
-        return nombres;
+    public String getAlpha2_code() {
+        return alpha2_code;
     }
 
-    public void setNombres(String nombres) {
-        this.nombres = nombres;
+    public String getAlpha3_code() {
+        return alpha3_code;
     }
-
-    public String getCodigoISO() {
-        return codigoISO;
-    }
-
-    public void setCodigoISO(String codigoISO) {
-        this.codigoISO = codigoISO;
-    }
-
-    private String id_pais;
-    private String nombres;
-    private String codigoISO;
-
 }

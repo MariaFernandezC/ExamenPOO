@@ -28,6 +28,7 @@ import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
+import com.google.api.services.vision.v1.model.WebEntity;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
@@ -129,6 +130,25 @@ public class LabelDetection extends AppCompatActivity {
             }
         });
     }
+
+    private String convertResponseToString(BatchAnnotateImagesResponse response) {
+        String message = "I found these things:\n\n";
+
+        List<WebEntity> labels = response.getResponses().get(0).getWebDetection().getWebEntities();
+        if (labels != null) {
+            for (WebEntity label : labels) {
+                message += String.format(Locale.US, "%.3f: %s", label.getScore(), label.getDescription());
+                message += "\n";
+            }
+        } else {
+            message += "nothing";
+        }
+
+        return message;
+    }
+
+
+
     public void botonClickCargar(View view){
         openGallery();
     }
@@ -177,22 +197,5 @@ public class LabelDetection extends AppCompatActivity {
         }
     }
 
-
-
-    private static String convertResponseToString(BatchAnnotateImagesResponse response) {
-        StringBuilder message = new StringBuilder("I found these things:\n\n");
-
-        List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
-        if (labels != null) {
-            for (EntityAnnotation label : labels) {
-                message.append(String.format(Locale.US, "%.3f: %s", label.getScore(), label.getDescription()));
-                message.append("\n");
-            }
-        } else {
-            message.append("nothing");
-        }
-
-        return message.toString();
-    }
     }
 
